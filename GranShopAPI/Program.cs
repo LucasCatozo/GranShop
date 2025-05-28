@@ -1,8 +1,15 @@
-using Microsoft.AspNetCore.Components.Web;
+using GranShopAPI.Data;
+using Microsoft.EnttityFraneworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Add services to the container.
-builder.Services.AddControllers();
+string conexao = builder.Configuration.GetConnectionString("Conexao");
+builder.Services.AddContext<AppDbContext>(options =>
+    options.UseMySQL(conexao)
+    );
+
+    builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(c =>
@@ -16,6 +23,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.createSscope())
+{
+    var AppDbContext = scope.ServicesProvider
+        .GetRequiredService<AppDbContext>();
+    await dbContext.Databate.EnsureCreatedAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
