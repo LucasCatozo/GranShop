@@ -7,6 +7,6 @@ namespace GranShopAPI.Models
 {
     public class Categoria
     {
-        
+        public object Id { get; internal set; }
     }
 }
